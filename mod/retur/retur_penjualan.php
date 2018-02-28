@@ -112,7 +112,6 @@
 								<th>KODE BRG.</th>
 								<th>NAMA BRG.</th>
 								<th>HARGA</th>
-								<th>DISC.</th>
 								<th>TOTAL</th>
 								<th>#</th>
 							</tr>
@@ -159,8 +158,8 @@
 
 							$no = $posisi + 1;
 							while ($m = mysql_fetch_assoc($sql_kul)) {
-								$harga_disc = $m['harga'] - (($m['harga'] * $m['disc']) / 100);
-								$sub_total = $harga_disc * $m['qty'];
+								$harga_disc = $m['harga'] * $m['qty'];
+								$sub_total = $harga_disc ;
 								$total_harga = $total_harga + $sub_total;
 
 								echo"<tr>
@@ -169,7 +168,7 @@
 									<td>$m[kode_barang]</td>
 									<td>$m[nama_barang]</td>
 									<td>Rp. ".number_format($m['harga'])." X $m[qty]</td>
-									<td>".number_format($m['disc'])."%</td>
+									
 									<td>Rp. ".number_format($total_harga)."</td>
 									<td><a href='$aksi?mod=returpenjualan&act=hapus&id=$m[no_transaksi]&kode=$m[kode_barang]' onclick=\"return confirm('Yakin hapus data');\"><i class='fa fa-trash w3-large w3-text-red'></i></a>
 									</td>
@@ -255,7 +254,7 @@
 		
 		<?php
 			$sqlTags = mysql_query("SELECT no_transaksi FROM tb_penjualan 
-								ORDER BY kode_pelanggan ASC") or die(mysql_error());
+								ORDER BY email_pelanggan ASC") or die(mysql_error());
 
 			$tags = array();
 			while($t = mysql_fetch_assoc($sqlTags))

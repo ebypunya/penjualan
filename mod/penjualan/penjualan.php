@@ -135,10 +135,10 @@
 							}
 			
 
-							$qtydata = mysql_num_rows(mysql_query($q));
+							$jmldata = mysql_num_rows(mysql_query($q));
 
-							$qtyhalaman  = $p->jumlahHalaman($qtydata, $batas);
-				    		$linkHalaman = $p->navHalaman($_GET['halaman'], $qtyhalaman, $linkaksi);
+							$jmlhalaman  = $p->jumlahHalaman($jmldata, $batas);
+				    		$linkHalaman = $p->navHalaman($_GET['halaman'], $jmlhalaman, $linkaksi);
 						}
 						else
 						{
@@ -206,7 +206,7 @@
 
 						<tbody>";
 
-						$sql_tmp = mysql_query("SELECT a.kode_barang, a.harga, b.nama_barang, a.qty
+						$sql_tmp = mysql_query("SELECT a.kode_barang, a.qty, a.harga, b.nama_barang
 												FROM tb_detail_penjualan_tmp a, tb_barang b
 												WHERE a.kode_barang = b.kode_barang 
 												AND a.petugas = '$_SESSION[login_id]' 
@@ -219,10 +219,9 @@
 						if(mysql_num_rows($sql_tmp) > 0)
 						{
 							while ($b = mysql_fetch_assoc($sql_tmp)) {
-								
-								$harga_disc = $b['harga']  * $b['qty'];
+								$harga_disc = $b['harga'] * $b['qty'];
 								$sub_total = $harga_disc;
-								$total_harga = $total_harga + $sub_total + $b['kirim'];
+								$total_harga = $total_harga + $sub_total;
 
 								echo"<tr style='border-bottom:1px dashed #ccc;'>
 									<td>$no</td>
@@ -252,6 +251,10 @@
 							<td colspan='4'><b class='w3-text-red w3-small w3-right'>Rp. ".number_format($total_harga)."</b></td>
 						</tr>
 						<tr>
+							<td colspan='3'><b>Biaya Kurir (Rp.)<b></td>
+							<td colspan='3'><input type='text' name='kurir' id='kurir' class='w3-input w3-border w3-tiny w3-right' value='0'></td>
+						</tr>
+						<tr>
 							<td colspan='3'><b>POTONGAN HARGA (Rp.)<b></td>
 							<td colspan='3'><input type='text' name='potongan' id='potongan' class='w3-input w3-border w3-tiny w3-right' value='0'></td>
 						</tr>
@@ -265,37 +268,43 @@
 					</table><hr>
 
 					<div class='w3-card-2 w3-light-blue'>
-							<div class='w3-row'>
-								<div class='w3-col s3'>
-									<input type='radio' class='w3-radio' name='status' value='TOKO' id='pay-toko'>
-									<label class='w3-validate'>TOKO</label>
-								</div>
-								<div class='w3-col s3'>
-									<input type='radio' class='w3-radio' name='status' value='SALES'>
-									<label class='w3-validate'>SALES</label>
-								</div>
-								<div class='w3-col s3'>
-									<input type='radio' class='w3-radio' name='status' value='ONLINE'>
-									<label class='w3-validate'>ONLINE</label>
-								</div>
-							</div>
-						<form action='$aksi?mod=penjualan&act=simpan' method='POST' class='w3-container' id='form-toko'>
+						<form action='$aksi?mod=penjualan&act=simpan' method='POST' class='w3-container'>
 							<input type='hidden' name='potongan2' id='potongan2' value='0'>
 							<input type='hidden' name='total' id='total' value='"?><?php echo isset($total_harga) ? $total_harga : 0; ?><?php echo"'>
-
-							<input type='hidden' name='qtybayar2' id='bayar2'>
-							
+							<input type='hidden' name='kurir2' id='kurir2' value='0'>
+							<input type='hidden' name='jmlbayar2' id='bayar2'>
 							<label class='w3-label w3-text-black'>Nama Pelanggan :</label>
 							<input type='text' name='nama' id='nama' class='w3-input w3-tiny w3-border-0' required>
 							<label class='w3-label w3-text-black'>Alamat Pelanggan :</label>
 							<input type='text' name='alamat' id='alamat' class='w3-input w3-tiny w3-border-0' required>
-							<p>
-							<table>
-						
-					</table>
+							<label class='w3-label w3-text-black'>Kota :</label>
+							<input type='text' name='kota' id='kota' class='w3-input w3-tiny w3-border-0' required>
+							<label class='w3-label w3-text-black'>Telepon :</label>
+							<input type='tlp' name='tlp' id='tlp' class='w3-input w3-tiny w3-border-0' required>
+
+							<label class='w3-label w3-text-black'>Bayar (Rp):</label>
+							<input type='text' name='jmlbayar' id='bayar' class='w3-input w3-tiny w3-border-0' required>
+
+							
+							<label class='w3-label w3-text-black'>Status Pembayaran:</label>
+							<div class='w3-row'>
+								<div class='w3-col s6'>
+									<input type='radio' class='w3-radio' name='status' value='TOKO' checked>
+									<label class='w3-validate'>ONLINE</label>
+								</div>
+								<div class='w3-col s6'>
+									<input type='radio' class='w3-radio' name='status' value='SALES'>
+									<label class='w3-validate'>SALES</label>
+								</div>
+								<div class='w3-col s6'>
+									<input type='radio' class='w3-radio' name='status' value='ONLINE'>
+									<label class='w3-validate'>TOKO</label>
+								</div>
+							</div>
+
+
 							<p><button class='w3-btn w3-green' onclick=\"return confirm('Klik OK untuk melanjutkan');\"><i class='fa fa-save'></i> Simpan Transaksi</button></p>
 						</form>
-						
 					</div><br>";
 
 				echo"</div>
@@ -340,9 +349,9 @@
 					</tr>
 
 					<tr style='border-bottom:1px dashed #ccc;'>
-						<td>Status</td>
+						<td>Transaksi</td>
 						<td>:</td>
-						<td><b>$tra[status]</b><p></td>
+						<td><b>$tra[status]</b></td>
 					</tr>
 					<tr style='border-bottom:1px dashed #ccc;'>
 						<td>Alamat / Kota</td>
@@ -350,16 +359,10 @@
 						<td><b>$tra[alamat] / $tra[kota]</b></td>
 					</tr>
 					<tr style='border-bottom:1px dashed #ccc;'>
-						<td>No Tlp</td>
+						<td>Telepon</td>
 						<td>:</td>
-						<td><b>$tra[no_tlp]</b></td>
+						<td><b>$tra[tlp]</b></td>
 					</tr>
-					<tr style='border-bottom:1px dashed #ccc;'>
-						<td>Penjualan</td>
-						<td>:</td>
-						<td><b>$tra[penjualan]</b></td>
-					</tr>
-					
 				</table>
 				<div style='height:10px;'></div>";
 
@@ -371,7 +374,7 @@
 						<th>KODE</th>
 						<th>BARANG</th>
 						<th>HARGA</th>
-						<th>DISC</th>
+						<th>QTY.</th>
 						<th colspan='2'>SUB TOTAL</th>
 					</tr>
 					</thead>
@@ -391,7 +394,7 @@
 					$harga_disc = $p['harga'] * $p['qty'];
 					$sub_total = $harga_disc;
 
-					$total = $total + $sub_total + $p['kirim'];
+					$total = $total + $sub_total;
 					echo"<tr>
 						<td>$no</td>
 						<td>$p[kode_barang]</td>
@@ -403,7 +406,7 @@
 
 					$no++;
 				}
-				$total_bayar = $total - $tra['potongan'];
+				$total_bayar = $total - $tra['potongan'] + $tra['kurir'];
 				$sisa = $tra['bayar'] - $total_bayar;
 
 				echo"</tbody>
@@ -413,22 +416,33 @@
 						<td>Rp. ".number_format($total)."</td>
 					</tr>
 					<tr class='w3-light-grey'>
+						<td colspan='5'>Biaya Kurir</td>
+						<td>Rp. ".number_format($tra['kurir'])."</td>
+					</tr>
+					<tr class='w3-light-grey'>
 						<td colspan='5'>Potongan Harga</td>
 						<td>Rp. ".number_format($tra['potongan'])."</td>
 					</tr>
+					
 					<tr class='w3-light-grey'>
 						<td colspan='5'><b>Total Bayar</b></td>
-						<td><b>Rp. ".number_format($total)."</b></td>
+						<td><b>Rp. ".number_format($total_bayar)."</b></td>
 					</tr>
-					
-					
+					<tr class='w3-light-grey'>
+						<td colspan='5'><b>Pembayaran</b></td>
+						<td><b>Rp. ".number_format($tra['bayar'])."</b></td>
+					</tr>
+					<tr class='w3-light-grey'>
+						<td colspan='5'><b>Kembali</b></td>
+						<td><b>Rp. ".number_format($sisa)."</b></td>
+					</tr>
 					</tfoot>
 				</table>
 
 				<p>
 					<button class='w3-btn w3-tiny' onclick=\"window.history.back()\"><i class='fa fa-mail-reply-all'></i> Back</button>
-					<a href='med.php?mod=penjualan' class='w3-btn w3-red w3-tiny'><i class='fa fa-cart-plus'></i> Proses</a>
-					<a href='popup/popup.php?mod=cetakkwitansi&id=$_GET[id]' class='w3-btn w3-dark-grey w3-tiny' target='_blank'><i class='fa fa-print'></i> Cetak Invoice</a>
+					<a href='med.php?mod=penjualan' class='w3-btn w3-red w3-tiny'><i class='fa fa-cart-plus'></i> Transaksi Baru</a>
+					<a href='popup/popup.php?mod=cetakkwitansi&id=$_GET[id]' class='w3-btn w3-dark-grey w3-tiny' target='_blank'><i class='fa fa-print'></i> Cetak Kwitansi</a>
 				</p>";
 
 			}
@@ -481,13 +495,13 @@
 					<tr class='w3-yellow'>
 						<th>NO</th>
 						<th>NO. TRANSAKSI</th>
-						<th>KODE PEL.</th>
+						<th>Email PEL.</th>
 						<th>NAMA PELANGGAN</th>
 						<th>TGL. TRANSAKSI</th>
 						<th>PETUGAS</th>
 						<th>TOTAL</th>
 						<th>POTONGAN</th>
-						<th>STATUS</th>
+						<th>Transaksi</th>
 						<th>#</th>
 					</tr>
 				</thead>
@@ -536,8 +550,9 @@
 							<td>$m[nama_pelanggan]</td>
 							<td>$m[timestmp]</td>
 							<td>".nama_petugas($m['petugas'])."</td>
-							<td>".total_penjualan($m['no_transaksi'])."</td>
+							<td>".total_penjualan($m['$total_bayar'])."</td>
 							<td>Rp. ".number_format($m['potongan'])."</td>
+							<td>Rp. ".number_format($m['potongan3'])."</td>
 							<td>$m[status]</td>
 							<td><a href='$aksi?mod=penjualan&act=hapus&id=$m[no_transaksi]' onclick=\"return confirm('Yakin hapus data');\"><i class='fa fa-trash w3-large w3-text-red'></i></a>
 							</td>
@@ -547,10 +562,10 @@
 					}
 	
 
-					$qtydata = mysql_num_rows(mysql_query($q));
+					$jmldata = mysql_num_rows(mysql_query($q));
 
-					$qtyhalaman  = $p->jumlahHalaman($qtydata, $batas);
-		    		$linkHalaman = $p->navHalaman($_GET['halaman'], $qtyhalaman, $linkaksi);
+					$jmlhalaman  = $p->jumlahHalaman($jmldata, $batas);
+		    		$linkHalaman = $p->navHalaman($_GET['halaman'], $jmlhalaman, $linkaksi);
 				}
 				else
 				{
@@ -608,20 +623,28 @@
 	$(function(){
 		$("#bayar").number(true);
 		$("#potongan").number(true);
+		$("#kurir").number(true);
+		
 
 		$('#bayar').keyup(function(){
 			var bayar = $('#bayar').val();
 			$('#bayar2').val(bayar);
+		});
+		$('#kurir').keyup(function(){
+			var kurir = $('#kurir').val();
+			$('#kurir2').val(kurir);
 		});
 
 		$('#potongan').keyup(function(){
 			var potongan = $('#potongan').val();
 			$('#potongan2').val(potongan);
 
+
 			var total = $("#total").val();
 			var pot = $("#potongan2").val();
+			var kur = $("#kurir").val();
 			
-			var tot_bayar = total - pot;
+			var tot_bayar = parseInt(total - pot)+parseInt(kur);
 			if (tot_bayar > 0) {
 				$("#tot").text(tot_bayar).number(true);
 			}
@@ -642,27 +665,9 @@
 				$tags[] = '{label : "'.$t['nama_pelanggan'].'", value : "'.$t['email_pelanggan'].'"}';
 				
 			}
-			
-			$sqlTags2 = mysql_query("SELECT * FROM tb_pelanggan 
-								ORDER BY email_pelanggan ASC") or die(mysql_error());
-
-			$tags2 = array();
-			while($t2 = mysql_fetch_assoc($sqlTags2))
-			{
-				$tags2[] = '{label : "'.$t2['email_pelanggan'].'", value : "'.$t2['email_pelanggan'].'"}';
-				
-			}
 		?>
 		var availableTags = [<?php echo implode(", \n\t\t\t", $tags); ?>];
 	    $( "#nama" ).autocomplete({
-	    	source: availableTags,
-	    	select:function(event, ui) {
-	    		$("#bayar").focus();
-	    		console.log(ui.item.label);
-	    	}
-	    });
-		var availableTags = [<?php echo implode(", \n\t\t\t", $tags2); ?>];
-	    $( "#email" ).autocomplete({
 	    	source: availableTags,
 	    	select:function(event, ui) {
 	    		$("#bayar").focus();

@@ -147,7 +147,11 @@
 			else
 			{
 				commit();
-				echo"Berhasil transaksi!";
+				echo"Berhasil transaksi....!";
+				echo"<script>
+			window.history.back();
+		</script>";
+
 			}
 		}
 		else

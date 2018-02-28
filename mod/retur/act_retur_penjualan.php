@@ -38,7 +38,6 @@
 															kode_barang, 
 															qty, 
 															harga, 
-															disc, 
 															petugas, 
 															keterangan, 
 															timestmp)
@@ -46,7 +45,6 @@
 															'$_POST[barang]', 
 															$_POST[qty], 
 															$r[harga], 
-															$r[disc], 
 															'$_SESSION[login_id]', 
 															'$_POST[keterangan]', 
 															NOW())");

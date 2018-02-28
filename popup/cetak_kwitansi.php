@@ -3,24 +3,24 @@
 	$sqltrans = mysql_query("SELECT * FROM tb_penjualan WHERE no_transaksi = '$_GET[id]'") or die(mysql_error());
 	$tra = mysql_fetch_assoc($sqltrans);
 ?>
-<h4 class="w3-text-blue" style="padding-bottom:0;margin-bottom:0;"><b>CV. CHACA KOMPUTER</b></h4>
+<h4 class="w3-text-blue" style="padding-bottom:0;margin-bottom:0;"><b>P.T Perkakasku Multi Cemerlang</b></h4>
 <div class="w3-row">
-	<div class="w3-col s6 w3-tiny">Jl. Jendral A. Thalib No. 16 Simpang Karya - Jambi<br>
-		Telp. (0741) 670523
+	<div class="w3-col s6 w3-tiny">Jl. Jendral A.Yani No 350, Bandung<br>
+		(022) 727-1332
 	</div>
 	<div class="w3-col s6 w3-tiny">
 		<span class="w3-right">
-		Menjual : Spare Part Komputer, Komputer Baru, dll<br>
-		Melayani : Pengadaan Barang & Jasa, Pemasangan LAN, Service Komputer, dll.</span>
+		Menjual : Menjual Mesin, Spare part Alat Alat Teknil, Dll<br>
+		Melayani : Service alat alat teknik.</span>
 	</div>
 </div>
 <div style="border-bottom:3px solid #ccc;"></div>
-<center><h5>KWITANSI PEMBAYARAN</h5></center>
+<center><h5>Faktur Pembelian</h5></center>
 <?php
 	echo"<div class='w3-tiny'>
 	<b>NO : #$tra[no_transaksi]</b><br>
 	Kepada Yth, <br>
-	$tra[nama_pelanggan] / "?><?php echo !empty($tra['kode_pelanggan']) ? $tra['kode_pelanggan'] : "-"; ?>
+	$tra[nama_pelanggan] / "?><?php echo !empty($tra['email_pelanggan']) ? $tra['email_pelanggan'] : "-"; ?>
 	<?php echo"</div>
 	<div style='height:5px;'></div>";
 
@@ -62,7 +62,7 @@
 
 		$no++;
 	}
-	$total_bayar = $total - $tra['potongan'];
+	$total_bayar = $total - $tra['potongan'] + $tra['kurir'];
 	$sisa = $tra['bayar'] - $total_bayar;
 
 	echo"</tbody>
@@ -70,6 +70,10 @@
 		<tr class='w3-light-grey'>
 			<td colspan='5'>Total Harga</b></td>
 			<td>Rp. ".number_format($total)."</td>
+		</tr>
+		<tr class='w3-light-grey'>	
+			<td colspan='5'>Biaya Kurir</td>
+			<td>Rp. ".number_format($tra['kurir'])."</td>
 		</tr>
 		<tr class='w3-light-grey'>
 			<td colspan='5'>Potongan Harga</td>

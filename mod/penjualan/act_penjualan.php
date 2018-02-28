@@ -42,7 +42,7 @@
 										AND petugas = '$_SESSION[login_id]'") or die(mysql_error());
 			if(mysql_num_rows($cek_det_barang) > 0)
 			{
-				mysql_query("UPDATE tb_detail_penjualan_tmp SET disc = disc+2
+				mysql_query("UPDATE tb_detail_penjualan_tmp SET disc = disc
 							WHERE kode_barang = '$_GET[id]' 
 							AND petugas = '$_SESSION[login_id]'") or die(mysql_error());
 			}
@@ -50,7 +50,6 @@
 			{
 				mysql_query("INSERT INTO tb_detail_penjualan_tmp (kode_barang,
 																	harga,
-																	
 																	qty,
 																	petugas,
 																	timestmp)
@@ -76,7 +75,7 @@
 	}
 
 	elseif ($mod == "penjualan" AND $act == "batal") {
-		mysql_query("DELETE FROM tb_detail_penjualan_tmp
+		mysql_query("DELETE FROM tb_detail_penjualan_tmp 
 					WHERE kode_barang = '$_GET[id]' 
 					AND petugas = '$_SESSION[login_id]'") or die(mysql_error());
 
@@ -93,7 +92,13 @@
 
 		if (mysql_num_rows($qtmp) > 0) {
 			$no_transaksi = no_kwitansi_auto(); //no transaksi automatis
-			$total_bayar = $total;
+			$jmlbayar = $_POST['jmlbayar2'];
+			$tlp = $_POST['tlp'];
+			$alamat = $_POST['alamat'];
+			$kota = $_POST['kota'];
+			$kurir = $_POST ['kurir'];
+			
+			$total_bayar = 0;
 
 			$tgl = date('Y-m-d');
 			while($tmp = mysql_fetch_assoc($qtmp))
@@ -104,15 +109,15 @@
 				$harga_disc = $tmp['harga'] * $tmp['qty'];
 				$sub_total = $harga_disc;
 
-				$total_bayar =  $total_bayar + $sub_total ;
+				$total_bayar =  $total_bayar + $sub_total;
 			}
 
 			if ($_POST['potongan2'] > 0) {
-				$total_bayar = $total_bayar - $_POST['potongan2'];
+				$total_bayar = $total_bayar - $_POST['potongan2'] + $_POST['kurir2'];
 			}
 			else
 			{
-				$total_bayar = $total_bayar;
+				$total_bayar = $total_bayar + $_POST['kurir2'];
 			}
 			
 			//print_r($chart);
@@ -132,7 +137,7 @@
 			//echo $nama_pelanggan;
 
 			//apakah pembayaran sudah cukup
-			if (($total_bayar != $qtybayar) OR ($_POST['status'] == "HUTANG")) {
+			if (($total_bayar <= $jmlbayar) OR ($_POST['status'] == "SALES")) {
 				//start transaction
 				start_transaction();
 
@@ -143,22 +148,19 @@
 																		tgl_transaksi, 
 																		petugas, 
 																		status,
-																		
-																		bayar,
-																		
-																		
+																		bayar, 
 																		potongan, 
-																		timestmp)
+																		timestmp, alamat, kota, tlp, kurir)
 																VALUES('$no_transaksi', 
 																		'$kode_pel', 
 																		'$nama_pelanggan',
-																		'$tgl', 
-																		'															
+																		'$tgl',  
 																		'$_SESSION[login_id]',
 																		'$_POST[status]', 
-																		 '$qtybayar',
+																		$jmlbayar, 
 																		$_POST[potongan2], 
-																		NOW())");
+																		NOW(),
+																		'$alamat','$kota','$tlp', $_POST[kurir2])");
 				if (!$qsimpanheader) {
 					rollback();
 					flash('example_message', '<p>Transaksi Gagal.</p>', 'w3-red');
@@ -171,16 +173,14 @@
 					foreach ($chart as $row) {
 						$qsimpandetail = mysql_query("INSERT INTO tb_detail_penjualan(no_transaksi,
 																						kode_barang,
-																						
-																						harga, 
-																						qty, 
+																						qty,
+																						harga,
 																						petugas, 
 																						timestmp)
 																				VALUES('$no_transaksi', 
 																						'$row[kode_barang]', 
-																						
-																						'$row[harga]', 
 																						$row[qty], 
+																						'$row[harga]', 
 																						$row[petugas], 
 																						'$row[timestmp]')");
 						if (!$qsimpandetail) {

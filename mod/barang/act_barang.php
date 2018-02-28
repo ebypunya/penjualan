@@ -133,7 +133,7 @@
 	elseif ($mod == "barang" AND $act == "hapus") 
 	{
 		mysql_query("DELETE FROM tb_barang WHERE kode_barang = '$_GET[id]'") or die(mysql_error());
-		flash('example_message', '<p>Berhasil menghapus data biaya kuliah.</p>' );
+		flash('example_message', '<p>Berhasil menghapus data barang.</p>' );
 		echo"<script>
 			window.history.back();
 		</script>";	

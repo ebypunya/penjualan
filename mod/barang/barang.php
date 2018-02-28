@@ -293,7 +293,7 @@
 							<td>$m[kode_supplier]</td>
 							<td>$m[jml_stok] $m[satuan]</td>
 							<td><a href='med.php?mod=barang&act=form&id=$m[kode_barang]'><i class='fa fa-pencil-square w3-large w3-text-blue'></i></a> 
-							<a href='$aksi?mod=barang&act=hapus&id=$m[kode_barang]' onclick=\"return myAlert(0);\"><i class='fa fa-trash w3-large w3-text-red'></i></a></td>
+							<a href='$aksi?mod=barang&act=hapus&id=$m[kode_barang]' onclick=\"return confirm('Yakin hapus data');\"><i class='fa fa-trash w3-large w3-text-red'></i></a></td>
 						
 						</tr>";
 						$no++;

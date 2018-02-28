@@ -28,7 +28,7 @@
 	if($mod == "pelanggan" AND $act == "simpan")
 	{
 		//variable input
-		$email_pelanggan = trim($_POST['emailp_pelanggan']);
+		$email_pelanggan = trim($_POST['id']);
 		$nama_pelanggan= anti_inject($_POST['nama_pelanggan']);
 		$nomor_telp= anti_inject($_POST['nomor_telp']);
 		$alamat= anti_inject($_POST['alamat']);
@@ -51,7 +51,7 @@
 	elseif ($mod == "pelanggan" AND $act == "edit") 
 	{
 		//variable input
-		$email_pelanggan = trim($_POST['emailp_pelanggan']);
+		$email_pelanggan = trim($_POST['id']);
 		$nama_pelanggan= anti_inject($_POST['nama_pelanggan']);
 		$nomor_telp= anti_inject($_POST['nomor_telp']);
 		$alamat= anti_inject($_POST['alamat']);

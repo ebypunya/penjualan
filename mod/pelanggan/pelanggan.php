@@ -26,7 +26,7 @@
 
 	switch ($act) {
 		case 'form':
-			if(!empty($_GET['emailp_pelanggan']))
+			if(!empty($_GET['id']))
 			{
 				$act = "$aksi?mod=pelanggan&act=edit";
 				$query = mysql_query("SELECT * FROM tb_pelanggan WHERE email_pelanggan = '$_GET[id]'");
@@ -54,9 +54,9 @@
 			echo"<form class='w3-small' method='POST' action='$act'>
 				<table>
 					<tr>
-						<td width='220px'><label class='w3-label'>email PELANGGAN</label></td>
+						<td width='220px'><label class='w3-label'>Email PELANGGAN</label></td>
 						<td width='10px'>:</td>
-						<td><input type='text' name='emailp_pelanggan' class='w3-input' placeholder='email_pelanggan' value='"?><?php echo isset($c['email_pelanggan']) ? $c['email_pelanggan'] : '';?><?php echo"'"?> <?php echo isset($c['email_pelanggan']) ? ' readonly' : ' ';?><?php echo" required>
+						<td><input type='text' name='email_pelanggan' class='w3-input' placeholder='email_pelanggan' value='"?><?php echo isset($c['email_pelanggan']) ? $c['email_pelanggan'] : '';?><?php echo"'"?> <?php echo isset($c['email_pelanggan']) ? ' readonly' : ' ';?><?php echo" required>
 						</td>
 						
 					</tr>
@@ -145,7 +145,7 @@
 				<thead>
 					<tr class='w3-yellow'>
 						<th>NO</th>
-						<th>email PEL.</th>
+						<th>Email PEL.</th>
 						<th>NAMA PELANGGAN</th>
 						<th>NOMOR TELP</th>
 						<th>ALAMAT</th>
@@ -186,7 +186,7 @@
 				$sql_kul = mysql_query($query);
 				$fd_kul = mysql_num_rows($sql_kul);
 
-				if($fd_kul > 0)
+				if($fd_kul > 0)	
 				{
 					$no = $posisi + 1;
 					while ($m = mysql_fetch_assoc($sql_kul)) {
